@@ -2,6 +2,8 @@ import tempPicture from "../assets/tempPicture.png";
 import picture from "../assets/tempPicture.png";
 import searchLogo from "../assets/search.png";
 import moreLogo from "../assets/more.png";
+import { useDispatch } from "react-redux";
+import {moreActions} from '../store/index.js'
 const dummy_array = [
   {
     name: "Batyrlan",
@@ -80,6 +82,10 @@ const dummy_array = [
   },
 ];
 export default function ChatPage() {
+  const dispatch = useDispatch();
+  function handleMore() {
+    dispatch(moreActions.changeIsMore())
+  }
   return (
     <div className="ChatPage">
       <header className="chatName">
@@ -89,7 +95,7 @@ export default function ChatPage() {
         </div>
         <div className="groupSettings">
           <img alt="Search in chat..." src={searchLogo} />
-          <img alt="About group" src={moreLogo} />
+          <img onClick={handleMore} alt="About group" src={moreLogo} />
         </div>
       </header>
       <div className="chatDiv">
