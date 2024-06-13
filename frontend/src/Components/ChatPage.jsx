@@ -2,89 +2,22 @@ import tempPicture from "../assets/tempPicture.png";
 import picture from "../assets/tempPicture.png";
 import searchLogo from "../assets/search.png";
 import moreLogo from "../assets/more.png";
-import { useDispatch } from "react-redux";
-import {moreActions} from '../store/index.js'
-const dummy_array = [
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message: "Salam",
-    id: 1237,
-  },
-  {
-    name: "Alisher",
-    picture: tempPicture,
-    message: "Salam popalam",
-    id: 1236,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message: "Smotri prikol",
-    id: 1235,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda consequuntur obcaecati delectus alias iusto totam blanditiis laborum ad modi ratione. Reprehenderit illo unde eveniet quas, alias minus voluptas atque accusantium.",
-    id: 1234,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message: "Salam",
-    id: 1237,
-  },
-  {
-    name: "Alisher",
-    picture: tempPicture,
-    message: "Salam popalam",
-    id: 1236,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message: "Smotri prikol",
-    id: 1235,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda consequuntur obcaecati delectus alias iusto totam blanditiis laborum ad modi ratione. Reprehenderit illo unde eveniet quas, alias minus voluptas atque accusantium.",
-    id: 1234,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message: "Salam",
-    id: 1237,
-  },
-  {
-    name: "Alisher",
-    picture: tempPicture,
-    message: "Salam popalam",
-    id: 1236,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message: "Smotri prikol",
-    id: 1235,
-  },
-  {
-    name: "Batyrlan",
-    picture: tempPicture,
-    message:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda consequuntur obcaecati delectus alias iusto totam blanditiis laborum ad modi ratione. Reprehenderit illo unde eveniet quas, alias minus voluptas atque accusantium.",
-    id: 1234,
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { moreActions, messageActions } from "../store/index.js";
+
 export default function ChatPage() {
   const dispatch = useDispatch();
+  const messages = useSelector((state) => state.addMessage.meMessage);
+  console.log(messages)
   function handleMore() {
-    dispatch(moreActions.changeIsMore())
+    dispatch(moreActions.changeIsMore());
+  }
+  function handleSending(event) {
+    event.preventDefault();
+    const fd = new FormData(event.target);
+    const data = Object.fromEntries(fd.entries());
+    console.log(data.message)
+    dispatch(messageActions.sendMessage(data.message));
   }
   return (
     <div className="ChatPage">
@@ -100,15 +33,15 @@ export default function ChatPage() {
       </header>
       <div className="chatDiv">
         <ul className="chatMessages">
-          {dummy_array.map((message) => {
+          {messages.map((message, index) => {
             return (
-              <li key={message.id}>
+              <li key={index}>
                 <div>
-                  <img src={message.picture} />
+                  <img src={tempPicture} />
                 </div>
                 <div>
-                  <h4>{message.name}</h4>
-                  <h5>{message.message}</h5>
+                  <h4>Me</h4>
+                  <h5>{message}</h5>
                 </div>
               </li>
             );
@@ -116,7 +49,9 @@ export default function ChatPage() {
         </ul>
       </div>
       <footer className="sendingMessage">
-        <input placeholder="Write a message..." />
+        <form onSubmit={handleSending}>
+          <input name="message" placeholder="Write a message..." />
+        </form>
       </footer>
     </div>
   );

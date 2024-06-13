@@ -68,7 +68,7 @@ body {
   border-radius: 8px;
   padding: 10px;
   overflow: auto;
-  height: 70vh;
+  height: 70%;
 }
 
 .listOfChats {
@@ -276,13 +276,55 @@ input:focus {
   background-color: #47a9a0;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
 }
+
+.groupGallery {
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
 .groupGallery ul {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  padding: 10px;
-  gap: 5px;
+  grid-gap: 10px;
+  padding: 0;
+  margin: 0;
+
 }
+
+.groupGallery li {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .groupGallery img {
   width: 60px;
+  height: 60px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
+
+.groupGallery li:hover img {
+  transform: scale(1.1);
+}
+
+.groupGallery::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .groupGallery ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .groupGallery ul {
+    grid-template-columns: 1fr;
+  }
+}
+

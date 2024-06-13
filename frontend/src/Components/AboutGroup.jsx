@@ -1,13 +1,6 @@
 import tempPicture from "../assets/tempPicture.png";
 const photos = [
   tempPicture,
-  tempPicture,
-  tempPicture,
-  tempPicture,
-  tempPicture,
-  tempPicture,
-  tempPicture,
-  tempPicture,
 ];
 export default function AboutGroup() {
   return (
