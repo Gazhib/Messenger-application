@@ -1,15 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {meMessage: [], otherMessage: [], users: []}
+const initialState = { meMessage: [], otherMessage: [], users: [] };
 
 const messagingSlice = createSlice({
-  name: 'messaging',
+  name: "messaging",
   initialState,
-  reducers:{
-    sendMessage(state, action){
-      state.meMessage.push(action.payload)
+  reducers: {
+    addMessage(state, action) {
+      state.meMessage.push(action.payload);
     },
-
-  }
-})
-export default messagingSlice
+    receiveMessage(state, action) {
+      state.otherMessage.push(action.payload);
+    },
+  },
+});
+export default messagingSlice;
