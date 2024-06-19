@@ -1,5 +1,5 @@
 import logo from "../assets/logo.png";
-import { authActions } from "../store";
+import { authActions, userActions } from "../store";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import style from "./Sidebar.module.css";
@@ -8,6 +8,8 @@ export default function Sidebar() {
   const dispatch = useDispatch();
   function handleLogout() {
     dispatch(authActions.changeAuth());
+    dispatch(userActions.getUsername(""));
+    dispatch(userActions.getFriends([]));
     navigate("/registration");
   }
 

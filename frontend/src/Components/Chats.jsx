@@ -13,7 +13,7 @@ export default function Chats() {
   return (
     <div className={style.Chats}>
       <div className={style.top}>
-        <h1 className={style.text}>Messages</h1>
+        <h1 className={style.text}>Users</h1>
         <form className={style.searchInput}>
           <input
             onChange={handleSearch}

@@ -1,7 +1,5 @@
 import tempPicture from "../assets/tempPicture.png";
 import picture from "../assets/tempPicture.png";
-import searchLogo from "../assets/search.png";
-import moreLogo from "../assets/more.png";
 import { useDispatch, useSelector } from "react-redux";
 import { moreActions, messageActions } from "../store/index.js";
 import { socket } from "../socket.js";
@@ -11,7 +9,6 @@ export default function Chat() {
   const inputref = useRef();
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.addMessage.meMessage);
-  console.log(messages);
   useEffect(() => {
     const handleNewMessage = (message) => {
       dispatch(messageActions.addMessage(message));
@@ -45,8 +42,8 @@ export default function Chat() {
           GroupName
         </div>
         <div className={style.groupSettings}>
-          <i class="bi bi-search"></i>
-          <i onClick={handleMore} class="bi bi-three-dots-vertical"></i>
+          <i className="bi bi-search"></i>
+          <i onClick={handleMore} className="bi bi-three-dots-vertical"></i>
         </div>
       </header>
       <div className={style.chatDiv}>
