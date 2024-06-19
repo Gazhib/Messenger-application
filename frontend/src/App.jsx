@@ -1,27 +1,22 @@
-import { useRef } from "react";
-import AboutGroup from "./Components/AboutGroup";
-import ChatPage from "./Components/ChatPage";
-import Chats from "./Components/Chats";
-import RegistrationModal from "./Components/RegistrationModal";
-import Sidebar from "./Components/Sidebar";
-import { useSelector } from "react-redux";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AppLayout from "./AppLayout"; // Ensure correct import paths
+import RegistrationPage from "./Components/RegistrationPage";
+import SignInPage from "./Components/SignInPage";
+
+// Define your router
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      { path: "registration", element: <RegistrationPage /> },
+      { path: "login", element: <SignInPage /> },
+    ],
+  },
+]);
+
 function App() {
-  const ref = useRef();
-  function handleClicking() {
-    ref.current.open();
-  }
-  const isMore = useSelector((state) => state.more.isMore);
-  return (
-    <>
-      <div className="App">
-        <Sidebar handleClicking={handleClicking} />
-        <Chats />
-        <ChatPage />
-        {isMore && <AboutGroup />}
-      </div>
-      <RegistrationModal ref={ref} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

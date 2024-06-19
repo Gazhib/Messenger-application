@@ -1,0 +1,101 @@
+.AboutGroup {
+  width: 456px;
+  height: 100vh;
+  background-color: #26282c;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.AboutGroup::-webkit-scrollbar {
+  display: none;
+}
+
+.chatPicture {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  margin-right: 15px;
+}
+
+.chatPicture.Settings {
+  width: 150px;
+  height: 150px;
+  margin: 0;
+}
+
+.groupPictureDiv {
+  padding-top: 30px;
+}
+
+.addMembersButton {
+  padding: 10px;
+  border: none;
+  background-color: #4db6ac;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.addMembersButton:hover {
+  background-color: #47a9a0;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+}
+
+.groupGallery {
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.groupGallery ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  padding: 0;
+  margin: 0;
+
+}
+
+.groupGallery li {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.groupGallery img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.groupGallery li:hover img {
+  transform: scale(1.1);
+}
+
+.groupGallery::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .groupGallery ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .groupGallery ul {
+    grid-template-columns: 1fr;
+  }
+}

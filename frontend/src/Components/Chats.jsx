@@ -1,34 +1,39 @@
-import tempPicture from "../assets/tempPicture.png";
-const dummy_array = [
-  {
-    name: "Bessie Cooper",
-    picture: tempPicture,
-    message:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda consequuntur obcaecati delectus alias iusto totam blanditiis laborum ad modi ratione. Reprehenderit illo unde eveniet quas, alias minus voluptas atque accusantium.",
-    id: 1234,
-  },
-];
-
+import style from "./Chats.module.css";
+import temp from "../assets/blankPP.png";
+import { SearchUsers } from "../fetching";
+import { useState } from "react";
 export default function Chats() {
+  const [userList, setUserList] = useState([]);
+  async function handleSearch(event) {
+    event.preventDefault();
+    const typed = event.target.value;
+    const users = await SearchUsers(typed);
+    setUserList(users);
+  }
   return (
-    <div className="Chats">
-      <div className="top">
-        <h1 className="text">Messages</h1>
-        <form className="searchInput">
-          <input name="search" placeholder="Search..." type="text" />
+    <div className={style.Chats}>
+      <div className={style.top}>
+        <h1 className={style.text}>Messages</h1>
+        <form className={style.searchInput}>
+          <input
+            onChange={handleSearch}
+            name="search"
+            placeholder="Search..."
+            type="text"
+          />
         </form>
       </div>
-      <div className="messageChats">
-        <ul className="listOfChats">
-          {dummy_array.map((person) => {
+      <div className={style.messageChats}>
+        <ul className={style.listOfChats}>
+          {userList.map((person) => {
             return (
-              <button className="chat" key={person.id}>
-                <div className="imageContainer">
-                  <img src={person.picture} />
+              <button className={style.chat} key={person._id}>
+                <div className={style.imageContainer}>
+                  <img src={temp} />
                 </div>
-                <div className="infoContainer">
-                  <h4 className="name">{person.name}</h4>
-                  <h6 className="last-message">{person.message}</h6>
+                <div className={style.infoContainer}>
+                  <h4 className={style.name}>{person.username}</h4>
+                  <h6 className={style.last_message}>{person.message}</h6>
                 </div>
               </button>
             );

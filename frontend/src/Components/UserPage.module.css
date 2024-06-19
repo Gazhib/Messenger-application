@@ -1,0 +1,75 @@
+.UserPage {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.profilePicture {
+  border-radius: 50%;
+  width: 200px;
+}
+
+.buttonContainer {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.button {
+  height: 35px;
+  border-radius: 10px;
+  border: none;
+  padding: 8px 16px;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add {
+  color: #282c34;
+  background-color: #61dafb;
+}
+
+.block {
+  color: white;
+  background-color: rgb(179, 46, 46);
+}
+
+.add:hover {
+  background-color: #8ce5fd;
+}
+
+.block:hover {
+  background-color: rgb(182, 35, 35);
+  ;
+}
+
+.leftSide {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightSide {
+  display: flex;
+  flex: 2;
+  justify-content: center;
+  margin-top: 10%;
+}
+
+.friend{
+  width: 50px;
+}
+
+ul{
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 10px;
+  padding: 0;
+  margin: 0;
+}

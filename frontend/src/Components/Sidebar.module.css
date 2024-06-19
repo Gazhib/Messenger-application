@@ -1,0 +1,17 @@
+.Sidebar {
+  background-color: #21252b;
+  width: 3vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.thirdRow {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 76px;
+}

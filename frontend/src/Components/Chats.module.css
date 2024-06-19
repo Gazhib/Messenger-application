@@ -1,0 +1,88 @@
+.Chats {
+  width: 30vw;
+  height: 100vh;
+  background-color: #3a3f4b;
+  padding: 20px;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.searchInput input {
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.messageChats {
+  background-color: #4a4f5b;
+  border-radius: 8px;
+  padding: 10px;
+  overflow: auto;
+  height: 70%;
+}
+
+.listOfChats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.messageChats::-webkit-scrollbar {
+  display: none;
+}
+
+.chat {
+  color: #abb2bf;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s;
+  border-radius: 10px;
+}
+
+.chat:hover {
+  background-color: #4c5c70;
+}
+
+.imageContainer img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.infoContainer {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.infoContainer .name {
+  font-size: 18px;
+  margin: 0;
+}
+
+.infoContainer .last_message {
+  font-size: 14px;
+  margin-top: 5px;
+}
