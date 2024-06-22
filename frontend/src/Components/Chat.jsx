@@ -1,7 +1,7 @@
 import tempPicture from "../assets/tempPicture.png";
 import picture from "../assets/tempPicture.png";
 import { useDispatch, useSelector } from "react-redux";
-import { moreActions, messageActions } from "../store/index.js";
+import { uiActions, messageActions } from "../store/index.js";
 import { socket } from "../socket.js";
 import { useEffect, useRef } from "react";
 import style from "./Chat.module.css";
@@ -21,7 +21,7 @@ export default function Chat() {
     };
   }, [dispatch]);
   function handleMore() {
-    dispatch(moreActions.changeIsMore());
+    dispatch(uiActions.changeIsMore());
   }
   function handleSending(event) {
     event.preventDefault();

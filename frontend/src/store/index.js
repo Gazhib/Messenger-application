@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import moreSlice from "./more";
+import uiSlice from "./ui";
 import messagingSlice from "./ActionTypes";
 import authSlice from "./auth";
 import userSlice from "./user";
@@ -13,7 +13,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  more: moreSlice.reducer,
+  ui: uiSlice.reducer,
   addMessage: messagingSlice.reducer,
   auth: authSlice.reducer,
   user: userSlice.reducer,
@@ -25,7 +25,7 @@ const store = configureStore({
   reducer: persistedReducer,
 });
 export const messageActions = messagingSlice.actions;
-export const moreActions = moreSlice.actions;
+export const uiActions = uiSlice.actions;
 export const authActions = authSlice.actions;
 export const userActions = userSlice.actions;
 const persistor = persistStore(store);

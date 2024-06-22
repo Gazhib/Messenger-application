@@ -1,5 +1,5 @@
-import { useDispatch } from "react-redux";
-import { authActions, userActions } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions, userActions, uiActions } from "../store";
 import { useState } from "react";
 import { Login } from "../fetching";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ export default function SignInPage() {
   const [text, setText] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const kal = useSelector((state) => state.user.username);
   async function handleLogin(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
@@ -15,15 +16,20 @@ export default function SignInPage() {
     const userData = { username: data.username, password: data.password };
     const info = await Login(userData);
     if (info.success) {
-      dispatch(authActions.changeAuth());
+      dispatch(authActions.changeAuth(true));
       const userInfo = await GetUserInformation(data.username);
-      dispatch(userActions.getUsername(userInfo.username));
+      const fuckingUsername = data.username;
+      dispatch(userActions.getUsername({ fuckingUsername }));
       dispatch(userActions.getFriends(userInfo.friends));
       navigate("/");
       setText(null);
     } else {
       setText(info.message);
     }
+  }
+
+  function handleChange() {
+    dispatch(uiActions.changeLogginIn("registration"));
   }
 
   return (
@@ -35,7 +41,11 @@ export default function SignInPage() {
       <div className="modal">
         <form onSubmit={handleLogin}>
           <h1>Sign In</h1>
-          <Link to="/registration" style={{ color: "inherit" }}>
+          <Link
+            onClick={handleChange}
+            to="/registration"
+            style={{ color: "inherit" }}
+          >
             <h3>You want to create an account?</h3>
           </Link>
           <div>

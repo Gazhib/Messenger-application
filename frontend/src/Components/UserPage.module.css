@@ -29,7 +29,6 @@
 
 .add {
   color: #282c34;
-  background-color: #61dafb;
 }
 
 .block {
@@ -61,15 +60,16 @@
   margin-top: 10%;
 }
 
-.friend{
+.friend {
   width: 50px;
 }
 
-ul{
+.rightSide ul {
   list-style-type: none;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-gap: 10px;
+  grid-gap: 15px;
   padding: 0;
   margin: 0;
+  text-align: center;
 }

@@ -1,17 +1,24 @@
 .Sidebar {
   background-color: #21252b;
-  width: 3vw;
+  width: 60px;
   height: 100vh;
   display: flex;
+  position: fixed;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
-
+.firstRow{
+  margin-top: 20px;
+}
 .thirdRow {
   margin-bottom: 20px;
 }
 
 .logo {
-  width: 76px;
+  width: 40px;
+}
+
+.Sidebar img{
+  cursor: pointer;
 }

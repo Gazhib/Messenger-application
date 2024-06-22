@@ -1,15 +1,24 @@
 import style from "./Chats.module.css";
 import temp from "../assets/blankPP.png";
-import { SearchUsers } from "../fetching";
+import { GetUserInformation, SearchUsers } from "../fetching";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 export default function Chats() {
   const [userList, setUserList] = useState([]);
+  const navigate = useNavigate();
   async function handleSearch(event) {
     event.preventDefault();
     const typed = event.target.value;
     const users = await SearchUsers(typed);
     setUserList(users);
   }
+
+  async function handleOpenProfile(user) {
+    const userInfo = await GetUserInformation(user);
+    console.log(userInfo);
+    navigate(`/user/${userInfo.username}`);
+  }
+
   return (
     <div className={style.Chats}>
       <div className={style.top}>
@@ -27,7 +36,11 @@ export default function Chats() {
         <ul className={style.listOfChats}>
           {userList.map((person) => {
             return (
-              <button className={style.chat} key={person._id}>
+              <button
+                onClick={() => handleOpenProfile(person.username)}
+                className={style.chat}
+                key={person._id}
+              >
                 <div className={style.imageContainer}>
                   <img src={temp} />
                 </div>

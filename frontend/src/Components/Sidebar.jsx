@@ -7,17 +7,19 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   function handleLogout() {
-    dispatch(authActions.changeAuth());
+    dispatch(authActions.changeAuth(false));
     dispatch(userActions.getUsername(""));
     dispatch(userActions.getFriends([]));
-    navigate("/registration");
+    navigate("/");
   }
-
+  function handleLogo(){
+    navigate("/")
+  }
   return (
     <>
       <aside className={style.Sidebar}>
         <div className={style.firstRow}>
-          <img className={style.logo} src={logo} />
+          <img onClick={handleLogo} className={style.logo} src={logo} />
         </div>
         <div className={style.secondRow}></div>
         <div className={style.thirdRow}>

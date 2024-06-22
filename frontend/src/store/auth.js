@@ -6,8 +6,8 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    changeAuth(state) {
-      state.isConnected = !state.isConnected;
+    changeAuth(state, action) {
+      state.isConnected = action.payload;
     },
   },
 });

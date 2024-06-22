@@ -1,20 +1,22 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AppLayout from "./AppLayout";
+import ChatPage from "./Components/ChatPage";
 import RegistrationPage from "./Components/RegistrationPage";
-import SignInPage from "./Components/SignInPage";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <AppLayout />,
-    children: [
-      { path: "registration", element: <RegistrationPage /> },
-      { path: "login", element: <SignInPage /> },
-    ],
-  },
-]);
+import UserPage from "./Components/UserPage";
+import AppLayout from "./AppLayout";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <AppLayout />,
+      children: [
+        { path: "", element: <ChatPage /> },
+        { path: "registration", element: <RegistrationPage /> },
+        { path: "user/:username", element: <UserPage /> },
+      ],
+    },
+  ]);
+
   return <RouterProvider router={router} />;
 }
 

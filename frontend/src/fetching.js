@@ -86,4 +86,27 @@ async function GetUserInformation(username) {
   }
 }
 
-export { GetUserInformation, CreateAccount, Login, SearchUsers };
+async function AddFriend(username, friend) {
+  try {
+    const response = await fetch("http://localhost:3000/add-friend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, friend }),
+    });
+    if (!response.ok) {
+      return { success: false, message: "Response is not ok" };
+    }
+
+    const result = await response.json();
+    if (result.success) {
+      return { success: true, result };
+    }
+    return { success: false, message: result.message };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
+export { AddFriend, GetUserInformation, CreateAccount, Login, SearchUsers };

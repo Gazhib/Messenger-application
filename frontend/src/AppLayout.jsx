@@ -1,25 +1,21 @@
 import { useSelector } from "react-redux";
-import Sidebar from "./Components/Sidebar";
-import Chats from "./Components/Chats";
-import Chat from "./Components/Chat";
-import AboutGroup from "./Components/AboutGroup";
 import { Outlet } from "react-router-dom";
+import RegistrationPage from "./Components/RegistrationPage";
+import SignInPage from "./Components/SignInPage";
+import Sidebar from "./Components/Sidebar";
 
 function AppLayout() {
-  const isMore = useSelector((state) => state.more.isMore);
   const isAuth = useSelector((state) => state.auth.isConnected);
-
+  const regLog = useSelector((state) => state.ui.regLog);
   return (
     <>
+      <Sidebar />
       {isAuth ? (
-        <div className="App">
-          <Sidebar />
-          <Chats />
-          <Chat />
-          {isMore && <AboutGroup />}
-        </div>
-      ) : (
         <Outlet />
+      ) : regLog === "registration" ? (
+        <RegistrationPage />
+      ) : (
+        <SignInPage />
       )}
     </>
   );

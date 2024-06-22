@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { authActions } from "../store";
+import { authActions, uiActions } from "../store";
 import { useState } from "react";
 import { CreateAccount } from "../fetching";
 import { useNavigate } from "react-router";
@@ -30,11 +30,16 @@ export default function RegistrationPage() {
         return;
       }
 
-      dispatch(authActions.changeAuth());
+      dispatch(authActions.changeAuth(true));
       navigate("/");
       setText(null);
     }
   }
+
+  function handleChange(){
+    dispatch(uiActions.changeLogginIn('login'))
+  }
+
 
   return (
     <div className="RegistrationPage">
@@ -45,7 +50,7 @@ export default function RegistrationPage() {
       <div className="modal">
         <form onSubmit={handleSubmit}>
           <h1>Register</h1>
-          <Link to="/login" style={{ color: "inherit" }}>
+          <Link onClick={handleChange} to="/" style={{ color: "inherit" }}>
             <h3>Do you already have an account?</h3>
           </Link>
           <div>

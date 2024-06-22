@@ -39,6 +39,10 @@ const userCredentialSchema = new Schema({
     type: String,
     required: true,
   },
+  friendMessage: {
+    type: Array,
+    required: true,
+  },
 });
 
 const UserCredentials = mongoose.model("UserCredentials", userCredentialSchema);
@@ -91,6 +95,7 @@ app.post("/create-account", async (req, res) => {
       const newUserCredentials = new UserCredentials({
         username,
         password: hashedPassword,
+        friends: [],
       });
       await newUserCredentials.save();
       await newUser.save();
@@ -117,6 +122,33 @@ app.post("/login", async (req, res) => {
     }
   } catch (err) {
     res.json({ error: err.message });
+  }
+});
+
+app.post("/get-user-information", async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username: username });
+    res.json(user);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
+app.post("/add-friend", async (req, res) => {
+  const { username, friend } = req.body;
+  try {
+    const result = await User.updateOne(
+      { username },
+      { $addToSet: { friends: friend } }
+    );
+    if (result.nModified === 1) {
+      res.json({ success: true });
+    } else {
+      res.json({ success: false, message: "ne proshel nmodified" });
+    }
+  } catch (err) {
+    res.json({ success: false, error: err.message });
   }
 });
 
