@@ -45,9 +45,42 @@ const userCredentialSchema = new Schema({
   },
 });
 
-const UserCredentials = mongoose.model("UserCredentials", userCredentialSchema);
+const userMessagesSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  friendsMessages: {
+    type: Map,
+    of: {
+      type: [
+        new Schema(
+          {
+            sender: String,
+            receiver: String,
+            message: String,
+            timestamp: String,
+          },
+          { _id: false }
+        ),
+      ],
+      default: () => ({}),
+    },
+    required: true,
+  },
+});
 
-const User = mongoose.model("User", userSchema);
+const UserCredentials = mongoose.model(
+  "UserCredentials",
+  userCredentialSchema,
+  "usercredentials"
+);
+const UserMessages = mongoose.model(
+  "UserMessages",
+  userMessagesSchema,
+  "usermessage"
+);
+const User = mongoose.model("User", userSchema, "users");
 
 async function toMongoose() {
   await mongoose.connect(db);
@@ -95,10 +128,15 @@ app.post("/create-account", async (req, res) => {
       const newUserCredentials = new UserCredentials({
         username,
         password: hashedPassword,
-        friends: [],
+        friendMessage: [],
+      });
+      const newUserMessages = new UserMessages({
+        username,
+        friendsMessages: {},
       });
       await newUserCredentials.save();
       await newUser.save();
+      await newUserMessages.save();
       res.status(201).json({ message: "Account created successfully" });
     }
   } catch (err) {
@@ -152,10 +190,67 @@ app.post("/add-friend", async (req, res) => {
   }
 });
 
+app.post("/send-message", async (req, res) => {
+  const { sender, receiver, message } = req.body;
+  try {
+    const senderUser = await UserMessages.findOne({ username: sender });
+    if (!senderUser.friendsMessages.get(receiver)) {
+      console.log("net");
+      senderUser.friendsMessages.set(receiver, []);
+    }
+    const messages = senderUser.friendsMessages.get(receiver);
+    let timestamp = new Date().toISOString();
+    timestamp = timestamp.slice(11, 16);
+    messages.push({
+      sender,
+      receiver,
+      message,
+      timestamp,
+    });
+    await senderUser.save();
+    res.json({ success: true, message: "vrode kak norm" });
+  } catch (err) {
+    console.log("topas");
+    res.json({ success: false, error: err.message });
+  }
+});
+
+app.post("/get-messages", async (req, res) => {
+  try {
+    const { sender, receiver } = req.body;
+    const senderUser = await UserMessages.findOne({ username: sender });
+    if (!senderUser.friendsMessages.get(receiver)) {
+      return res.json({ success: true, messages: [] });
+    }
+
+    const messages = senderUser.friendsMessages.get(receiver);
+    if (messages) {
+      return res.json({ success: true, messages });
+    }
+    res.json({ success: false, messages: [] });
+  } catch (err) {
+    res.json({ success: false, messages: err.message });
+  }
+});
+const userSocketMap = {};
 io.on("connection", (socket) => {
-  console.log(socket.id);
-  socket.on("sending-message", (message) => {
-    socket.broadcast.emit("receive-message", message);
+  socket.on("register-id", (username) => {
+    userSocketMap[username] = socket.id;
+    console.log(userSocketMap[username], username);
+  });
+  socket.on("sending-message", (data) => {
+    const { sender, receiver, message } = data;
+    const receiverId = userSocketMap[receiver];
+    if (receiverId) {
+      console.log("hehe?");
+      io.to(receiverId).emit("receive-message", {
+        sender,
+        message,
+        timestamp: (new Date().toISOString()).slice(11,16),
+      });
+    } else {
+      console.log("pashol");
+    }
   });
 });
 server.listen(3000, () => {

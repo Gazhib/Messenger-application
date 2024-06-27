@@ -1,25 +1,26 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { authActions, userActions, uiActions } from "../store";
 import { useState } from "react";
 import { Login } from "../fetching";
 import { Link, useNavigate } from "react-router-dom";
 import { GetUserInformation } from "../fetching.js";
+import { socket } from "../socket.js";
 export default function SignInPage() {
   const [text, setText] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const kal = useSelector((state) => state.user.username);
   async function handleLogin(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
     const userData = { username: data.username, password: data.password };
+    dispatch(uiActions.changeIsPressed(false));
     const info = await Login(userData);
     if (info.success) {
       dispatch(authActions.changeAuth(true));
       const userInfo = await GetUserInformation(data.username);
-      const fuckingUsername = data.username;
-      dispatch(userActions.getUsername({ fuckingUsername }));
+      dispatch(userActions.getUsername(data.username));
+
       dispatch(userActions.getFriends(userInfo.friends));
       navigate("/");
       setText(null);

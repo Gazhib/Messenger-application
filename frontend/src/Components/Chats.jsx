@@ -3,9 +3,12 @@ import temp from "../assets/blankPP.png";
 import { GetUserInformation, SearchUsers } from "../fetching";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { uiActions, userActions } from "../store";
 export default function Chats() {
   const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   async function handleSearch(event) {
     event.preventDefault();
     const typed = event.target.value;
@@ -13,10 +16,13 @@ export default function Chats() {
     setUserList(users);
   }
 
-  async function handleOpenProfile(user) {
-    const userInfo = await GetUserInformation(user);
-    console.log(userInfo);
-    navigate(`/user/${userInfo.username}`);
+  // async function handleOpenProfile(user) {
+  //   navigate(`/user/${user}`);
+  // }
+
+  async function handleOpenChat(user) {
+    dispatch(userActions.getAnotherUser(user));
+    dispatch(uiActions.changeIsPressed(true));
   }
 
   return (
@@ -37,7 +43,7 @@ export default function Chats() {
           {userList.map((person) => {
             return (
               <button
-                onClick={() => handleOpenProfile(person.username)}
+                onClick={() => handleOpenChat(person.username)}
                 className={style.chat}
                 key={person._id}
               >

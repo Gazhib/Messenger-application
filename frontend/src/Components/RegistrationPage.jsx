@@ -1,15 +1,17 @@
 import { useDispatch } from "react-redux";
-import { authActions, uiActions } from "../store";
+import { authActions, uiActions, userActions } from "../store";
 import { useState } from "react";
 import { CreateAccount } from "../fetching";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { socket } from "../socket";
 export default function RegistrationPage() {
   const [text, setText] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   async function handleSubmit(event) {
     event.preventDefault();
+    dispatch(uiActions.changeIsPressed(false));
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
     if (data.password != data.confirmPassword) {
@@ -22,13 +24,14 @@ export default function RegistrationPage() {
       setText("Please fill out all the data");
     } else {
       const userData = { username: data.username, password: data.password };
-
       const { success } = await CreateAccount(userData);
 
       if (!success) {
         setText("The username is already in use");
         return;
       }
+      dispatch(userActions.getUsername(data.username));
+      dispatch(userActions.getFriends([]));
 
       dispatch(authActions.changeAuth(true));
       navigate("/");
@@ -36,10 +39,9 @@ export default function RegistrationPage() {
     }
   }
 
-  function handleChange(){
-    dispatch(uiActions.changeLogginIn('login'))
+  function handleChange() {
+    dispatch(uiActions.changeLogginIn("login"));
   }
-
 
   return (
     <div className="RegistrationPage">

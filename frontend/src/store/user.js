@@ -7,7 +7,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     getUsername(state, action) {
-      state.username = action.payload.fuckingUsername;
+      state.username = action.payload;
     },
     getFriends(state, action) {
       state.friends = action.payload;

@@ -10,10 +10,11 @@ export default function Sidebar() {
     dispatch(authActions.changeAuth(false));
     dispatch(userActions.getUsername(""));
     dispatch(userActions.getFriends([]));
+    dispatch(userActions.getAnotherUser(""));
     navigate("/");
   }
-  function handleLogo(){
-    navigate("/")
+  function handleLogo() {
+    navigate("/");
   }
   return (
     <>
