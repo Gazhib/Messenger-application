@@ -6,13 +6,16 @@ import { socket } from "../socket.js";
 import { useEffect, useRef, useState } from "react";
 import style from "./Chat.module.css";
 import { GetMessages, SendMessage } from "../fetching.js";
+import { useNavigate } from "react-router";
 export default function Chat() {
   const isPressed = useSelector((state) => state.ui.isPressed);
   const me = useSelector((state) => state.user.username);
   const partner = useSelector((state) => state.user.anotherUser);
   const inputref = useRef();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef();
   console.log(me);
   useEffect(() => {
     const handleNewMessage = (message) => {
@@ -25,6 +28,10 @@ export default function Chat() {
       socket.off("receive-message", handleNewMessage);
     };
   }, [dispatch]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   useEffect(() => {
     async function gettingMessages() {
       try {
@@ -41,6 +48,15 @@ export default function Chat() {
     gettingMessages();
   }, [me, partner]);
 
+  function handleOpenProfile() {
+    navigate(`/user/${partner}`);
+  }
+
+  function scrollToBottom() {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }
   function handleMore() {
     dispatch(uiActions.changeIsMore());
   }
@@ -76,12 +92,14 @@ export default function Chat() {
 
   return (
     <div className={style.Chat}>
-      {isPressed && (
+      {isPressed && partner && (
         <>
           <header className={style.chatName}>
             <div className={style.groupInfo}>
               <img className={style.chatPicture} src={picture} />
-              {partner}
+              <button onClick={handleOpenProfile} className={style.nickButton}>
+                {partner}
+              </button>
             </div>
             <div className={style.groupSettings}>
               <i className="bi bi-search"></i>
@@ -105,6 +123,7 @@ export default function Chat() {
                 );
               })}
             </ul>
+            <div ref={messagesEndRef} />
           </div>
           <footer className={style.sendingMessage}>
             <form onSubmit={handleSending}>

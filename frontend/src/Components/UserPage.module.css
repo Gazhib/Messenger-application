@@ -8,6 +8,7 @@
 .profilePicture {
   border-radius: 50%;
   width: 200px;
+  cursor: pointer;
 }
 
 .buttonContainer {
@@ -72,4 +73,11 @@
   padding: 0;
   margin: 0;
   text-align: center;
+}
+.profilePictureContainer{
+  text-align: center;
+}
+.username{
+  font-size: 30px;
+  color: white;
 }

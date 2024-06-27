@@ -10,13 +10,20 @@ import persistStore from "redux-persist/es/persistStore";
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ["user"],
+};
+
+const userPersistConfig = {
+  key: "user",
+  storage,
+  blacklist: ["anotherUser"],
 };
 
 const rootReducer = combineReducers({
   ui: uiSlice.reducer,
   addMessage: messagingSlice.reducer,
   auth: authSlice.reducer,
-  user: userSlice.reducer,
+  user: persistReducer(userPersistConfig, userSlice.reducer),
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

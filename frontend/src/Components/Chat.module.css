@@ -107,3 +107,13 @@ input:focus {
 .groupSettings i:hover {
   color: #ffffff;
 }
+
+.nickButton {
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  border: none;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import blankPicture from "../assets/blankPP.png";
 import { AddFriend, GetUserInformation } from "../fetching";
 import style from "./UserPage.module.css";
@@ -10,6 +10,7 @@ export default function UserPage() {
   const [isMe, setIsMe] = useState(false);
   const [friends, setFriends] = useState([]);
   const [isInFriends, setIsInFriends] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     setIsMe(username === myUsername);
     async function getFriends() {
@@ -22,6 +23,10 @@ export default function UserPage() {
     getFriends();
   }, [username, myUsername]);
   function handleRemove() {}
+
+  function handleOpenProfile(partner) {
+    navigate(`/user/${partner}`);
+  }
 
   async function handleAdd() {
     const response = await AddFriend(myUsername, username);
@@ -37,6 +42,7 @@ export default function UserPage() {
     <div className={style.UserPage}>
       <div className={style.leftSide}>
         <div className={style.profilePictureContainer}>
+          <p className={style.username}>{username}</p>
           <img className={style.profilePicture} src={blankPicture} />
         </div>
         {!isMe ? (
@@ -73,6 +79,7 @@ export default function UserPage() {
                 return (
                   <li key={index}>
                     <img
+                      onClick={() => handleOpenProfile(friend)}
                       src={blankPicture}
                       className={`${style.profilePicture} ${style.friend}`}
                     />

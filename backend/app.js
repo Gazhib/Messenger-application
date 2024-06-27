@@ -194,20 +194,31 @@ app.post("/send-message", async (req, res) => {
   const { sender, receiver, message } = req.body;
   try {
     const senderUser = await UserMessages.findOne({ username: sender });
+    const receiverUser = await UserMessages.findOne({ username: receiver });
     if (!senderUser.friendsMessages.get(receiver)) {
-      console.log("net");
       senderUser.friendsMessages.set(receiver, []);
     }
-    const messages = senderUser.friendsMessages.get(receiver);
+    if (!receiverUser.friendsMessages.get(sender)) {
+      receiverUser.friendsMessages.set(sender, []);
+    }
+    const senderMessages = senderUser.friendsMessages.get(receiver);
+    const receiverMessages = receiverUser.friendsMessages.get(sender);
     let timestamp = new Date().toISOString();
     timestamp = timestamp.slice(11, 16);
-    messages.push({
+    senderMessages.push({
+      sender,
+      receiver,
+      message,
+      timestamp,
+    });
+    receiverMessages.push({
       sender,
       receiver,
       message,
       timestamp,
     });
     await senderUser.save();
+    await receiverUser.save();
     res.json({ success: true, message: "vrode kak norm" });
   } catch (err) {
     console.log("topas");
@@ -236,7 +247,6 @@ const userSocketMap = {};
 io.on("connection", (socket) => {
   socket.on("register-id", (username) => {
     userSocketMap[username] = socket.id;
-    console.log(userSocketMap[username], username);
   });
   socket.on("sending-message", (data) => {
     const { sender, receiver, message } = data;
@@ -246,7 +256,7 @@ io.on("connection", (socket) => {
       io.to(receiverId).emit("receive-message", {
         sender,
         message,
-        timestamp: (new Date().toISOString()).slice(11,16),
+        timestamp: new Date().toISOString().slice(11, 16),
       });
     } else {
       console.log("pashol");
