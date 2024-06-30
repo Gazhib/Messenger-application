@@ -157,7 +157,32 @@ async function GetMessages(sender, receiver) {
   }
 }
 
+async function GetChats(sender) {
+  try {
+    const response = await fetch("http://localhost:3000/get-chats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ sender }),
+    });
+
+    if (!response.ok) {
+      return { success: false, message: "Response is not ok" };
+    }
+
+    const result = await response.json();
+    if (result.success) {
+      return { success: true, result };
+    }
+    return { sucess: false, message: result.error };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
 export {
+  GetChats,
   GetMessages,
   SendMessage,
   AddFriend,

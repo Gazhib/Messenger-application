@@ -133,6 +133,7 @@ app.post("/create-account", async (req, res) => {
       const newUserMessages = new UserMessages({
         username,
         friendsMessages: {},
+        chats: [],
       });
       await newUserCredentials.save();
       await newUser.save();
@@ -195,12 +196,14 @@ app.post("/send-message", async (req, res) => {
   try {
     const senderUser = await UserMessages.findOne({ username: sender });
     const receiverUser = await UserMessages.findOne({ username: receiver });
+    console.log(senderUser.friendsMessages);
     if (!senderUser.friendsMessages.get(receiver)) {
       senderUser.friendsMessages.set(receiver, []);
     }
     if (!receiverUser.friendsMessages.get(sender)) {
       receiverUser.friendsMessages.set(sender, []);
     }
+
     const senderMessages = senderUser.friendsMessages.get(receiver);
     const receiverMessages = receiverUser.friendsMessages.get(sender);
     let timestamp = new Date().toISOString();
@@ -243,6 +246,26 @@ app.post("/get-messages", async (req, res) => {
     res.json({ success: false, messages: err.message });
   }
 });
+
+app.post("/get-chats", async (req, res) => {
+  const { sender } = req.body;
+  try {
+    const senderUser = await UserMessages.findOne({ username: sender });
+    if (!senderUser) {
+      return res.json({ success: false, error: "User not found" });
+    }
+    const chats = [];
+
+    for (const [key, value] of senderUser.friendsMessages.entries()) {
+      chats.push([key, value[value.length - 1]]);
+    }
+
+    res.json({ success: true, chats: chats });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
 const userSocketMap = {};
 io.on("connection", (socket) => {
   socket.on("register-id", (username) => {

@@ -1,34 +1,38 @@
 import style from "./Chats.module.css";
 import temp from "../assets/blankPP.png";
-import { GetUserInformation, SearchUsers } from "../fetching";
+import { GetChats, SearchUsers } from "../fetching";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions, userActions } from "../store";
 export default function Chats() {
   const [userList, setUserList] = useState([]);
+  const [chats, setChats] = useState([]);
   const dispatch = useDispatch();
   const inputRef = useRef();
-  const [friendsList, setFriendsList] = useState([]);
   const me = useSelector((state) => state.user.username);
   useEffect(() => {
-    async function getFriends() {
-      const response = await GetUserInformation(me);
-      const friends = response.friends;
-      setFriendsList(friends);
+    async function getFriendsAndChats() {
+      const chatResponse = await GetChats(me);
+      const chats = chatResponse.result.chats;
+      console.log(chats);
+      setUserList(chats);
+      setChats(chats);
     }
-    getFriends();
+
+    getFriendsAndChats();
   }, [me]);
 
-  useEffect(() => {
-
-  })
+  useEffect(() => {});
 
   async function handleSearch(event) {
     event.preventDefault();
     const typed = event.target.value;
     const users = await SearchUsers(typed);
     setUserList(users);
+    if (event.target.value === "") {
+      setUserList(chats);
+    }
   }
 
   async function handleOpenChat(user) {
@@ -53,10 +57,10 @@ export default function Chats() {
       </div>
       <div className={style.messageChats}>
         <ul className={style.listOfChats}>
-          {inputRef.current && inputRef.current.value && userList.map((person) => {
+          {userList.map((person) => {
             return (
               <button
-                onClick={() => handleOpenChat(person.username)}
+                onClick={() => handleOpenChat(person.username || person[0])}
                 className={style.chat}
                 key={person._id}
               >
@@ -64,8 +68,13 @@ export default function Chats() {
                   <img src={temp} />
                 </div>
                 <div className={style.infoContainer}>
-                  <h4 className={style.name}>{person.username}</h4>
-                  <h6 className={style.last_message}>{person.message}</h6>
+                  <div className={style.name}>
+                    <h4>{person.username || person[0]} </h4>
+                    <span className={style.timestamp}>
+                      {person[1].timestamp && person[1].timestamp}
+                    </span>
+                  </div>
+                  <h6 className={style.last_message}>{person[1].message}</h6>
                 </div>
               </button>
             );
