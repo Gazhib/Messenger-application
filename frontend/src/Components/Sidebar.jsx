@@ -1,14 +1,14 @@
+/* eslint-disable react/prop-types */
 import logo from "../assets/logo.png";
 import profilePicture from "../assets/blankPP.png";
 import { authActions, userActions } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import style from "./Sidebar.module.css";
-export default function Sidebar() {
+export default function Sidebar({ me }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.isConnected);
-  const me = useSelector((state) => state.user.username);
   function handleLogout() {
     dispatch(authActions.changeAuth(false));
     dispatch(userActions.getUsername(""));
@@ -26,12 +26,13 @@ export default function Sidebar() {
     <>
       <aside className={style.Sidebar}>
         <div className={style.firstRow}>
-          {isAuth && 
-          <img
-            onClick={handleProfile}
-            className={style.logo}
-            src={profilePicture}
-          />}
+          {isAuth && (
+            <img
+              onClick={handleProfile}
+              className={style.logo}
+              src={profilePicture}
+            />
+          )}
           <img onClick={handleLogo} className={style.logo} src={logo} />
         </div>
         <div className={style.secondRow}></div>

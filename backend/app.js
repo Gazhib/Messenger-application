@@ -115,31 +115,45 @@ app.post("/search-users", async (req, res) => {
 
 app.post("/create-account", async (req, res) => {
   const { username, password } = req.body;
+  const errors = {};
+  if (username.length < 3) {
+    errors["username"] = "Username must consist of at least 3 characters";
+  }
+
+  if (password.length < 6) {
+    errors["password"] = "Password must consist of at least 6 characters";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(422).json({ message: errors });
+  }
+
   try {
     const user = await User.findOne({ username: username });
     if (user) {
-      res.status(409).json({ message: "The username is already in use" });
-    } else {
-      const hashedPassword = await hashPassword(password);
-      const newUser = new User({
-        username,
-        friends: [],
-      });
-      const newUserCredentials = new UserCredentials({
-        username,
-        password: hashedPassword,
-        friendMessage: [],
-      });
-      const newUserMessages = new UserMessages({
-        username,
-        friendsMessages: {},
-        chats: [],
-      });
-      await newUserCredentials.save();
-      await newUser.save();
-      await newUserMessages.save();
-      res.status(201).json({ message: "Account created successfully" });
+      return res
+        .status(409)
+        .json({ message: "The username is already in use" });
     }
+    const hashedPassword = await hashPassword(password);
+    const newUser = new User({
+      username,
+      friends: [],
+    });
+    const newUserCredentials = new UserCredentials({
+      username,
+      password: hashedPassword,
+      friendMessage: [],
+    });
+    const newUserMessages = new UserMessages({
+      username,
+      friendsMessages: {},
+      chats: [],
+    });
+    await newUserCredentials.save();
+    await newUser.save();
+    await newUserMessages.save();
+    res.status(201).json({ message: "Account created successfully" });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -196,7 +210,6 @@ app.post("/send-message", async (req, res) => {
   try {
     const senderUser = await UserMessages.findOne({ username: sender });
     const receiverUser = await UserMessages.findOne({ username: receiver });
-    console.log(senderUser.friendsMessages);
     if (!senderUser.friendsMessages.get(receiver)) {
       senderUser.friendsMessages.set(receiver, []);
     }
@@ -224,7 +237,6 @@ app.post("/send-message", async (req, res) => {
     await receiverUser.save();
     res.json({ success: true, message: "vrode kak norm" });
   } catch (err) {
-    console.log("topas");
     res.json({ success: false, error: err.message });
   }
 });
@@ -275,14 +287,13 @@ io.on("connection", (socket) => {
     const { sender, receiver, message } = data;
     const receiverId = userSocketMap[receiver];
     if (receiverId) {
-      console.log("hehe?");
       io.to(receiverId).emit("receive-message", {
         sender,
+        receiver,
         message,
         timestamp: new Date().toISOString().slice(11, 16),
       });
     } else {
-      console.log("pashol");
     }
   });
 });

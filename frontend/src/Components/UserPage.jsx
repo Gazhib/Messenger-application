@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router";
 import blankPicture from "../assets/blankPP.png";
-import { AddFriend, GetUserInformation } from "../fetching";
+import { Fetching } from "../fetching";
 import style from "./UserPage.module.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -14,11 +14,15 @@ export default function UserPage() {
   useEffect(() => {
     setIsMe(username === myUsername);
     async function getFriends() {
-      const temp = await GetUserInformation(username);
-      const myTemp = await GetUserInformation(myUsername);
-      const friendsTemp = myTemp.friends.some((friend) => friend === username);
+      const temp = await Fetching("get-user-information", { username });
+      const myTemp = await Fetching("get-user-information", {
+        username: myUsername,
+      });
+      const friendsTemp = myTemp.info.friends.some(
+        (friend) => friend === username
+      );
       setIsInFriends(friendsTemp);
-      setFriends(temp.friends);
+      setFriends(temp.info.friends);
     }
     getFriends();
   }, [username, myUsername]);
@@ -29,9 +33,12 @@ export default function UserPage() {
   }
 
   async function handleAdd() {
-    const response = await AddFriend(myUsername, username);
+    const response = await Fetching("add-friend", {
+      username: myUsername,
+      friend: username,
+    });
     console.log(response);
-    if (response.success) {
+    if (response.info.success) {
       console.log("Successfully added a friend brotha");
     } else {
       console.log("Capec ty tupoi");

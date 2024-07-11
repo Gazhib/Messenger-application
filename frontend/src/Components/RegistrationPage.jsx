@@ -1,10 +1,9 @@
 import { useDispatch } from "react-redux";
 import { authActions, uiActions, userActions } from "../store";
 import { useState } from "react";
-import { CreateAccount } from "../fetching";
+import { Fetching } from "../fetching";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { socket } from "../socket";
 export default function RegistrationPage() {
   const [text, setText] = useState(null);
   const dispatch = useDispatch();
@@ -24,7 +23,7 @@ export default function RegistrationPage() {
       setText("Please fill out all the data");
     } else {
       const userData = { username: data.username, password: data.password };
-      const { success } = await CreateAccount(userData);
+      const { success } = await Fetching("create-account", userData);
 
       if (!success) {
         setText("The username is already in use");

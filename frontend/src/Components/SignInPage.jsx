@@ -1,9 +1,8 @@
 import { useDispatch } from "react-redux";
 import { authActions, userActions, uiActions } from "../store";
 import { useState } from "react";
-import { Login } from "../fetching";
+import { Fetching } from "../fetching";
 import { Link, useNavigate } from "react-router-dom";
-import { GetUserInformation } from "../fetching.js";
 import { socket } from "../socket.js";
 export default function SignInPage() {
   const [text, setText] = useState(null);
@@ -15,10 +14,12 @@ export default function SignInPage() {
     const data = Object.fromEntries(fd.entries());
     const userData = { username: data.username, password: data.password };
     dispatch(uiActions.changeIsPressed(false));
-    const info = await Login(userData);
+    const info = await Fetching("login", userData);
     if (info.success) {
       dispatch(authActions.changeAuth(true));
-      const userInfo = await GetUserInformation(data.username);
+      const userInfo = await Fetching("get-user-information", {
+        username: data.username,
+      });
       dispatch(userActions.getUsername(data.username));
 
       dispatch(userActions.getFriends(userInfo.friends));

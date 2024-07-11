@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import tempPicture from "../assets/tempPicture.png";
 import picture from "../assets/tempPicture.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -5,21 +6,25 @@ import { uiActions } from "../store/index.js";
 import { socket } from "../socket.js";
 import { useEffect, useRef, useState } from "react";
 import style from "./Chat.module.css";
-import { GetMessages, SendMessage } from "../fetching.js";
+import { Fetching } from "../fetching.js";
 import { useNavigate } from "react-router";
-export default function Chat() {
+export default function Chat({ me }) {
   const isPressed = useSelector((state) => state.ui.isPressed);
-  const me = useSelector((state) => state.user.username);
   const partner = useSelector((state) => state.user.anotherUser);
   const inputref = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef();
-  console.log(me);
   useEffect(() => {
     const handleNewMessage = (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      if (
+        (message.sender === me && message.receiver === partner) ||
+        (message.sender === partner && message.receiver === me)
+      ) {
+        console.log(message);
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
     };
 
     socket.on("receive-message", handleNewMessage);
@@ -27,7 +32,7 @@ export default function Chat() {
     return () => {
       socket.off("receive-message", handleNewMessage);
     };
-  }, [dispatch]);
+  }, [dispatch, me, partner]);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -35,9 +40,12 @@ export default function Chat() {
   useEffect(() => {
     async function gettingMessages() {
       try {
-        const response = await GetMessages(me, partner);
-        if (response.success && response.result) {
-          setMessages(response.result.messages);
+        const response = await Fetching("get-messages", {
+          sender: me,
+          receiver: partner,
+        });
+        if (response.success && response.info) {
+          setMessages(response.info.messages);
         } else {
           setMessages([]);
         }
@@ -65,7 +73,11 @@ export default function Chat() {
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
     if (data.message) {
-      await SendMessage(me, partner, data.message);
+      await Fetching("send-message", {
+        sender: me,
+        receiver: partner,
+        message: data.message,
+      });
       inputref.current.value = "";
       setMessages((prevMessages) => [
         ...prevMessages,

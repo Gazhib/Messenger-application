@@ -3,10 +3,12 @@ import Chats from "./Chats";
 import Chat from "./Chat";
 import { useSelector, useDispatch } from "react-redux";
 import AboutGroup from "./AboutGroup";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { socket } from "../socket";
 import { messageActions } from "../store";
+import { uiActions, userActions } from "../store";
 export default function ChatPage() {
+  const inputRef = useRef();
   const isMore = useSelector((state) => state.ui.isMore);
   const isAuth = useSelector((state) => state.auth.isConnected);
   const username = useSelector((state) => state.user.username);
@@ -21,7 +23,7 @@ export default function ChatPage() {
     }
 
     return () => {
-      if (isAuth) {
+      if (!isAuth) {
         socket.off("connect", handleConnect);
       }
     };
@@ -40,11 +42,21 @@ export default function ChatPage() {
     };
   }, [dispatch]);
 
+  async function handleOpenChat(user) {
+    dispatch(userActions.getAnotherUser(user));
+    dispatch(uiActions.changeIsPressed(true));
+    inputRef.current.value = "";
+  }
+
   return (
     <div className="App">
-      <Sidebar />
-      <Chats />
-      <Chat />
+      <Sidebar me={username} />
+      <Chats
+        me={username}
+        handleOpenChat={(user) => handleOpenChat(user)}
+        inputRef={inputRef}
+      />
+      <Chat me={username} />
       {isMore && <AboutGroup />}
     </div>
   );
