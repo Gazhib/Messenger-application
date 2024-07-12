@@ -18,6 +18,12 @@ const userSlice = createSlice({
     getAnotherUser(state, action) {
       state.anotherUser = action.payload;
     },
+    clearUserData(state) {
+      state.anotherUser = "";
+      state.chats = [];
+      state.username = "";
+      state.friends = [];
+    },
   },
 });
 

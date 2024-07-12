@@ -1,18 +1,20 @@
-import Sidebar from "./Sidebar";
-import Chats from "./Chats";
-import Chat from "./Chat";
+import Sidebar from "../Components/Sidebar";
+import Chats from "../Components/Chats";
+import Chat from "../Components/Chat";
 import { useSelector, useDispatch } from "react-redux";
-import AboutGroup from "./AboutGroup";
+import AboutGroup from "../Components/AboutGroup";
 import { useEffect, useRef } from "react";
 import { socket } from "../socket";
 import { messageActions } from "../store";
 import { uiActions, userActions } from "../store";
+import { useNavigate } from "react-router";
 export default function ChatPage() {
   const inputRef = useRef();
   const isMore = useSelector((state) => state.ui.isMore);
   const isAuth = useSelector((state) => state.auth.isConnected);
   const username = useSelector((state) => state.user.username);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     const handleConnect = () => {
       socket.emit("register-id", username);
@@ -45,6 +47,7 @@ export default function ChatPage() {
   async function handleOpenChat(user) {
     dispatch(userActions.getAnotherUser(user));
     dispatch(uiActions.changeIsPressed(true));
+    navigate(`${user}`);
     inputRef.current.value = "";
   }
 
@@ -61,3 +64,5 @@ export default function ChatPage() {
     </div>
   );
 }
+
+

@@ -11,10 +11,8 @@ export default function Sidebar({ me }) {
   const isAuth = useSelector((state) => state.auth.isConnected);
   function handleLogout() {
     dispatch(authActions.changeAuth(false));
-    dispatch(userActions.getUsername(""));
-    dispatch(userActions.getFriends([]));
-    dispatch(userActions.getAnotherUser(""));
-    navigate("/");
+    dispatch(userActions.clearUserData());
+    navigate("auth?mode=login");
   }
   function handleLogo() {
     navigate("/");

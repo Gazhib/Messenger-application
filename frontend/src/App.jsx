@@ -1,16 +1,26 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ChatPage from "./Components/ChatPage";
-import UserPage from "./Components/UserPage";
+import ChatPage from "./Pages/ChatPage";
+import UserPage from "./Pages/UserPage";
 import AppLayout from "./AppLayout";
-import RegistrationPage from "./Components/RegistrationPage";
+import ErrorPage from "./Pages/ErrorPage";
+import Auth from "./Pages/AuthPage";
+import Chat from "./Components/Chat";
+import { loader as messageLoader } from "./utility/messageLoader";
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
       element: <AppLayout />,
+      errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <ChatPage /> },
-        { path: "auth", element: <RegistrationPage /> },
+        {
+          path: ":username",
+          element: <ChatPage />,
+          children: [
+            { path: ":partner", loader: messageLoader, element: <Chat /> },
+          ],
+        },
+        { path: "auth", element: <Auth /> },
         { path: "user/:username", element: <UserPage /> },
       ],
     },

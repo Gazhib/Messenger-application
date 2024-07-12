@@ -7,11 +7,12 @@ import { socket } from "../socket.js";
 import { useEffect, useRef, useState } from "react";
 import style from "./Chat.module.css";
 import { Fetching } from "../fetching.js";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 export default function Chat({ me }) {
   const isPressed = useSelector((state) => state.ui.isPressed);
   const partner = useSelector((state) => state.user.anotherUser);
   const inputref = useRef();
+  const initialMessages = useLoaderData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
@@ -36,25 +37,6 @@ export default function Chat({ me }) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    async function gettingMessages() {
-      try {
-        const response = await Fetching("get-messages", {
-          sender: me,
-          receiver: partner,
-        });
-        if (response.success && response.info) {
-          setMessages(response.info.messages);
-        } else {
-          setMessages([]);
-        }
-      } catch (err) {
-        setMessages([]);
-      }
-    }
-    gettingMessages();
-  }, [me, partner]);
 
   function handleOpenProfile() {
     navigate(`/user/${partner}`);
@@ -94,12 +76,6 @@ export default function Chat({ me }) {
         message: data.message,
       });
     }
-
-    // if (data.message) {
-    //   socket.emit("sending-message", data.message);
-    //   dispatch(messageActions.addMessage(data.message));
-    //   inputref.current.value = "";
-    // }
   }
 
   return (

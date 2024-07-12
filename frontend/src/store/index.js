@@ -10,7 +10,7 @@ import persistStore from "redux-persist/es/persistStore";
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["user"],
+  blacklist: ["user", "ui"],
 };
 
 const userPersistConfig = {
@@ -19,16 +19,20 @@ const userPersistConfig = {
   blacklist: ["anotherUser"],
 };
 
+const uiPersistConfig = {
+  key: "ui",
+  storage,
+  blacklist: ["isMore"],
+};
+
 const rootReducer = combineReducers({
-  ui: uiSlice.reducer,
+  ui: persistReducer(uiPersistConfig, uiSlice.reducer),
   addMessage: messagingSlice.reducer,
   auth: authSlice.reducer,
   user: persistReducer(userPersistConfig, userSlice.reducer),
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-
 
 const store = configureStore({
   reducer: persistedReducer,

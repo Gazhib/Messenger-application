@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { isMore: true, regLog: "registration", isPressed: false };
+const initialState = { isMore: false, isPressed: false };
 
 const uiSlice = createSlice({
   name: "ui",
@@ -8,9 +8,6 @@ const uiSlice = createSlice({
   reducers: {
     changeIsMore(state) {
       state.isMore = !state.isMore;
-    },
-    changeLogginIn(state, action) {
-      state.regLog = action.payload;
     },
     changeIsPressed(state, action) {
       state.isPressed = action.payload;
