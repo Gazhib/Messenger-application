@@ -1,15 +1,19 @@
+import { redirect } from "react-router";
 import { Fetching } from "../fetching";
-export async function loader({ params }) {
+export async function messageLoader({ request, params }) {
   const { username, partner } = params;
-  try {
-    const response = await Fetching("get-messages", {
-      sender: username,
-      receiver: partner,
-    });
-    console.log("Loader response:", response); // Ensure this logs the expected data
-    return { initialMessages: response.info.messages };
-  } catch (err) {
-    console.error("Failed to load messages:", err);
-    return { initialMessages: [] };
+  const checker = localStorage.getItem("username");
+  if (username !== checker) {
+    return redirect(`/${checker}`);
+  }
+
+  const response = await Fetching("get-messages", {
+    sender: username,
+    receiver: partner,
+  });
+  if (response.success) {
+    return response.info.messages;
+  } else {
+    return [];
   }
 }

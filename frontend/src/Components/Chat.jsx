@@ -2,82 +2,65 @@
 import tempPicture from "../assets/tempPicture.png";
 import picture from "../assets/tempPicture.png";
 import { useDispatch, useSelector } from "react-redux";
-import { uiActions } from "../store/index.js";
-import { socket } from "../socket.js";
-import { useEffect, useRef, useState } from "react";
+import { messageActions, uiActions, userActions } from "../store/index.js";
+import { useEffect, useRef } from "react";
 import style from "./Chat.module.css";
+import {
+  useNavigate,
+  useParams,
+  Form,
+  useLoaderData,
+  useActionData,
+} from "react-router-dom";
 import { Fetching } from "../fetching.js";
-import { useLoaderData, useNavigate } from "react-router";
-export default function Chat({ me }) {
+export default function Chat() {
   const isPressed = useSelector((state) => state.ui.isPressed);
-  const partner = useSelector((state) => state.user.anotherUser);
+  const username = localStorage.getItem("username");
+  const { partner } = useParams();
   const inputref = useRef();
   const initialMessages = useLoaderData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef();
-  useEffect(() => {
-    const handleNewMessage = (message) => {
-      if (
-        (message.sender === me && message.receiver === partner) ||
-        (message.sender === partner && message.receiver === me)
-      ) {
-        console.log(message);
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
-    };
-
-    socket.on("receive-message", handleNewMessage);
-
-    return () => {
-      socket.off("receive-message", handleNewMessage);
-    };
-  }, [dispatch, me, partner]);
+  const messages = useSelector((state) => state.addMessage.messages);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  function handleOpenProfile() {
-    navigate(`/user/${partner}`);
-  }
 
   function scrollToBottom() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }
+  function handleOpenProfile() {
+    navigate(`/user/${partner}`);
+  }
+
   function handleMore() {
     dispatch(uiActions.changeIsMore());
   }
-  async function handleSending(event) {
-    event.preventDefault();
-    const fd = new FormData(event.target);
-    const data = Object.fromEntries(fd.entries());
-    if (data.message) {
-      await Fetching("send-message", {
-        sender: me,
-        receiver: partner,
-        message: data.message,
-      });
-      inputref.current.value = "";
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          sender: me,
-          receiver: partner,
-          message: data.message,
-          timestamp: new Date().toISOString().slice(11, 16),
-        },
-      ]);
-      socket.emit("sending-message", {
-        sender: me,
-        receiver: partner,
-        message: data.message,
-      });
-    }
-  }
 
+  useEffect(() => {
+    dispatch(messageActions.initialMessages(initialMessages));
+  }, [initialMessages, dispatch]);
+
+  const lastMessage = useActionData();
+
+  useEffect(() => {
+    async function getFriendsAndChats() {
+      const chatResponse = await Fetching("get-chats", { sender: username });
+      const chats = chatResponse.info.chats;
+      if (chats) {
+        dispatch(userActions.getChats(chats));
+      }
+    }
+
+    if (lastMessage) {
+      dispatch(messageActions.addMessage(lastMessage));
+      getFriendsAndChats();
+      inputref.current.value = "";
+    }
+  }, [lastMessage, dispatch, username]);
   return (
     <div className={style.Chat}>
       {isPressed && partner && (
@@ -96,32 +79,33 @@ export default function Chat({ me }) {
           </header>
           <div className={style.chatDiv}>
             <ul className={style.chatMessages}>
-              {messages.map((message, index) => {
-                return (
-                  <li key={index}>
-                    <div>
-                      <img src={tempPicture} />
-                    </div>
-                    <div>
-                      <h4>{message.sender}</h4>
-                      <h5>{message.message}</h5>
-                    </div>
-                    <div>{message.timestamp}</div>
-                  </li>
-                );
-              })}
+              {messages &&
+                messages.map((message, index) => {
+                  return (
+                    <li key={index}>
+                      <div>
+                        <img src={tempPicture} />
+                      </div>
+                      <div>
+                        <h4>{message.sender}</h4>
+                        <h5>{message.message}</h5>
+                      </div>
+                      <div>{message.timestamp}</div>
+                    </li>
+                  );
+                })}
             </ul>
             <div ref={messagesEndRef} />
           </div>
           <footer className={style.sendingMessage}>
-            <form onSubmit={handleSending}>
+            <Form method="post">
               <input
                 autoComplete="off"
                 ref={inputref}
                 name="message"
                 placeholder="Write a message..."
               />
-            </form>
+            </Form>
           </footer>
         </>
       )}

@@ -31,7 +31,13 @@ export default function AuthForm({ handleAuth, text, dataText, isLogin }) {
               />
             </div>
           )}
-          {text && <p className="modalError">{text}</p>}
+          {dataText.title === "Register" &&
+            text &&
+            text.split("\n").map((line, index) => (
+              <p className="modalError" key={index}>
+                {line}
+              </p>
+            ))}
           <button>{dataText && dataText.buttonText}</button>
         </form>
       </div>

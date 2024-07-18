@@ -10,12 +10,13 @@ export default function Sidebar({ me }) {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.isConnected);
   function handleLogout() {
+    navigate("/auth?mode=login");
     dispatch(authActions.changeAuth(false));
+    localStorage.clear("username");
     dispatch(userActions.clearUserData());
-    navigate("auth?mode=login");
   }
   function handleLogo() {
-    navigate("/");
+    navigate(`${me}`);
   }
   function handleProfile() {
     navigate(`user/${me}`);

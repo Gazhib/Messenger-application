@@ -114,18 +114,24 @@ app.post("/search-users", async (req, res) => {
 });
 
 app.post("/create-account", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, confirmPassword } = req.body;
   const errors = {};
-  if (username.length < 3) {
-    errors["username"] = "Username must consist of at least 3 characters";
+  if (username.length < 6) {
+    errors["username"] = "Username must consist of at least 6 characters";
   }
 
-  if (password.length < 6) {
-    errors["password"] = "Password must consist of at least 6 characters";
+  if (password.length < 8) {
+    errors["password"] = "Password must consist of at least 8 characters";
+  }
+
+  if (password !== confirmPassword) {
+    errors["confirm password"] = "Passwords are not matching";
   }
 
   if (Object.keys(errors).length > 0) {
-    return res.status(422).json({ message: errors });
+    return res
+      .status(409)
+      .json({ success: false, message: Object.values(errors) });
   }
 
   try {
@@ -241,24 +247,6 @@ app.post("/send-message", async (req, res) => {
   }
 });
 
-app.post("/get-messages", async (req, res) => {
-  try {
-    const { sender, receiver } = req.body;
-    const senderUser = await UserMessages.findOne({ username: sender });
-    if (!senderUser.friendsMessages.get(receiver)) {
-      return res.json({ success: true, messages: [] });
-    }
-
-    const messages = senderUser.friendsMessages.get(receiver);
-    if (messages) {
-      return res.json({ success: true, messages });
-    }
-    res.json({ success: false, messages: [] });
-  } catch (err) {
-    res.json({ success: false, messages: err.message });
-  }
-});
-
 app.post("/get-chats", async (req, res) => {
   const { sender } = req.body;
   try {
@@ -279,23 +267,42 @@ app.post("/get-chats", async (req, res) => {
 });
 
 const userSocketMap = {};
+
+app.post("/get-messages", async (req, res) => {
+  try {
+    const { sender, receiver } = req.body;
+    const senderUser = await UserMessages.findOne({ username: sender });
+    if (!senderUser.friendsMessages.get(receiver)) {
+      return res.json({ success: true, messages: [] });
+    }
+
+    const messages = senderUser.friendsMessages.get(receiver);
+    if (messages) {
+      return res.json({ success: true, messages });
+    }
+    res.json({ success: false, messages: [] });
+  } catch (err) {
+    res.json({ success: false, messages: err.message });
+  }
+});
 io.on("connection", (socket) => {
   socket.on("register-id", (username) => {
     userSocketMap[username] = socket.id;
   });
-  socket.on("sending-message", (data) => {
+
+  socket.on("sendingMessage", (data) => {
     const { sender, receiver, message } = data;
     const receiverId = userSocketMap[receiver];
-    if (receiverId) {
-      io.to(receiverId).emit("receive-message", {
+    if (receiverId && io.sockets.sockets.has(receiverId)) {
+      io.to(receiverId).emit("receiveMessage", {
         sender,
         receiver,
         message,
         timestamp: new Date().toISOString().slice(11, 16),
       });
-    } else {
     }
   });
+
 });
 server.listen(3000, () => {
   console.log(`Server running on http://localhost:3000`);

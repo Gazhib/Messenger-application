@@ -46,7 +46,7 @@
   display: none;
 }
 
-.chat {
+.listOfChats a {
   color: #abb2bf;
   display: flex;
   align-items: center;
@@ -59,9 +59,14 @@
   outline: none;
   transition: background-color 0.2s;
   border-radius: 10px;
+  text-decoration: none;
 }
 
-.chat:hover {
+.listOfChats a:hover {
+  background-color: #4c5c70;
+}
+
+.listOfChats a.active{
   background-color: #4c5c70;
 }
 

@@ -1,34 +1,10 @@
 /* eslint-disable react/prop-types */
 import style from "./Chats.module.css";
 import temp from "../assets/blankPP.png";
-import { Fetching } from "../fetching";
-import { useEffect, useState } from "react";
-export default function Chats({ me, handleOpenChat, inputRef }) {
-  const [userList, setUserList] = useState([]);
-  const [chats, setChats] = useState([]);
-  useEffect(() => {
-    async function getFriendsAndChats() {
-      const chatResponse = await Fetching("get-chats", { sender: me });
-      const chats = chatResponse.info.chats;
-      if (chats) {
-        setUserList(chats);
-        setChats(chats);
-      }
-    }
-
-    getFriendsAndChats();
-  }, [me]);
-
-  async function handleSearch(event) {
-    event.preventDefault();
-    const typed = event.target.value;
-    const users = await Fetching("search-users", { typed });
-    setUserList(users.info.users);
-    if (event.target.value === "") {
-      setUserList(chats);
-    }
-  }
-
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+export default function Chats({ handleOpenChat, inputRef, handleSearch }) {
+  const userList = useSelector((state) => state.user.chats);
   return (
     <div className={style.Chats}>
       <div className={style.top}>
@@ -47,9 +23,13 @@ export default function Chats({ me, handleOpenChat, inputRef }) {
         <ul className={style.listOfChats}>
           {userList.map((person) => {
             return (
-              <button
+              <NavLink
+                to={`chat/${person.username || person[0]}`}
                 onClick={() => handleOpenChat(person.username || person[0])}
-                className={style.chat}
+                className={({ isActive }) =>
+                  isActive ? `${style.active}` : undefined
+                }
+                end
                 key={person.username || person[0]}
               >
                 <div className={style.imageContainer}>
@@ -66,7 +46,7 @@ export default function Chats({ me, handleOpenChat, inputRef }) {
                     {person[1] && person[1].message}
                   </h6>
                 </div>
-              </button>
+              </NavLink>
             );
           })}
         </ul>

@@ -20,10 +20,8 @@ html {
 }
 
 .icon:hover {
-  color: rgb(213, 221, 236)
+  color: rgb(213, 221, 236);
 }
-
-
 
 h6,
 h5,
@@ -40,19 +38,20 @@ h4 {
   border: none;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 22.5%;
-  height: 60%;
+  width: 90%;
+  max-width: 400px;
+  height: auto;
   background-color: #3a3f4b;
   padding: 20px;
   color: #abb2bf;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-
 .modal input {
-  width: 80%;
+  width: 100%;
   padding: 8px 10px;
   margin-top: 8px;
   margin-bottom: 8px;
@@ -100,13 +99,64 @@ h4 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 
 .title {
   font-size: 35px;
   color: #ffffff;
+  text-align: center;
 }
 
 .RegistrationPage p span {
   color: #47a9a0;
+}
+
+/* Media Queries for Responsiveness */
+@media (min-width: 600px) {
+  .App {
+    flex-direction: row;
+  }
+
+  .modal {
+    width: 45%;
+    max-width: 400px;
+  }
+
+  .title {
+    font-size: 45px;
+  }
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 30%;
+    max-width: 400px;
+  }
+
+  .title {
+    font-size: 50px;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal {
+    width: 25%;
+    max-width: 400px;
+  }
+
+  .title {
+    font-size: 55px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal {
+    width: 22.5%;
+    max-width: 400px;
+  }
+
+  .title {
+    font-size: 60px;
+  }
 }
